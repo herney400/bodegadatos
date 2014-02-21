@@ -21,7 +21,10 @@ public class Bodegadatos {
         // TODO code application logic here
         
         FachadaDW f=new FachadaDW();
+        DaoDimensiones d=new DaoDimensiones();
+        
         f.conexion();
+        d.getAnormalidades();
     }
     
 }

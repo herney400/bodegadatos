@@ -26,15 +26,19 @@ public class DaoDimensiones {
     }
     public ArrayList<String> getAnormalidades() throws SQLException{
     
-            ArrayList<String> resultadoAnormalidades = new ArrayList<>();
-            String sql= "SELECT id_ciudad,anormalidad FROM anormalidades";
-            Connection conn = fachadDw.conexion();
-            Statement sentencia = conn.createStatement();
-            ResultSet tabla = sentencia.executeQuery(sql); 
-            tabla.getString(sql);
+            ArrayList<String> resultadoAnormalidades = new ArrayList<>(); 
+            String sql= "SELECT ciuda.ciudad,anormalidades.anormalidad,anormalidades.descripcion"
+                      + "FROM ciudad INNER JOIN anormalidad"
+                      + "ON ciudad.id_ciudad= anormalidad.id_ciudad"; 
+            Connection conn=fachadDw.conexion();
+            Statement sentencia=conn.createStatement();
+            ResultSet tabla=sentencia.executeQuery(sql); 
             return resultadoAnormalidades;    
-    }
     
+    }
+    public ArrayList<String> getCiudad() throws SQLException{
+      return null;
+    }
   
   
 }

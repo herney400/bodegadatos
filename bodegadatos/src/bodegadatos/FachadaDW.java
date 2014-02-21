@@ -22,7 +22,7 @@ public class FachadaDW {
      public FachadaDW() {
          
          String driver="org.postgresql.Driver";
-         url="jdbc:postgresql://localhost:5432/postgres";
+         url="jdbc:postgresql://localhost:5432/trabajodegrado";
          user ="postgres";
          password = "tesis";
      }

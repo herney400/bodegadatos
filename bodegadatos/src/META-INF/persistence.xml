@@ -2,17 +2,24 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="bodegadatosPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>Entidades.anormalidades</class>
-    <class>Entidades.Ciudad</class>
-    <class>Entidades.Clientes</class>
-    <class>Entidades.Empresa</class>
-    <class>Entidades.Fecha</class>
+    <class>persistencia.Reglas</class>
+    <class>persistencia.ReglasHistoricoConsumo</class>
+    <class>persistencia.Fecha</class>
+    <class>persistencia.Clientes</class>
+    <class>persistencia.Tiempo</class>
+    <class>persistencia.HistoricoPrecio</class>
+    <class>persistencia.FenomenosClimaticos</class>
+    <class>persistencia.Ciudad</class>
+    <class>persistencia.HistoricoConsumo</class>
+    <class>persistencia.Anormalidades</class>
+    <class>persistencia.Empresa</class>
+    <class>persistencia.Region</class>
+    <class>persistencia.Medida</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/trabajodegrado"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/>
       <property name="javax.persistence.jdbc.password" value="tesis"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
-      <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
 </persistence>

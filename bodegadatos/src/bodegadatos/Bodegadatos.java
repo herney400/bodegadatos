@@ -7,6 +7,9 @@
 package bodegadatos;
 
 import java.sql.SQLException;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 /**
  *
@@ -20,11 +23,18 @@ public class Bodegadatos {
     public static void main(String[] args) throws SQLException {
         // TODO code application logic here
         
-        FachadaDW f=new FachadaDW();
-        DaoDimensiones d=new DaoDimensiones();
-        
-        f.conexion();
-        d.getAnormalidades();
+        try
+	{
+	    JFrame.setDefaultLookAndFeelDecorated(true);
+	    JDialog.setDefaultLookAndFeelDecorated(true);
+	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            CargaDatos cd = new CargaDatos();
+            cd.show();
+	}
+	catch (Exception e)
+	{
+	    e.printStackTrace();
+	}
     }
     
 }

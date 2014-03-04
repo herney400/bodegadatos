@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "region")
@@ -42,7 +42,7 @@ public class Region implements Serializable {
     @Column(name = "pais")
     private String pais;
     @OneToMany(mappedBy = "idRegion")
-    private Collection<Ciudad> ciudadCollection;
+    private List<Ciudad> ciudadList;
 
     public Region() {
     }
@@ -76,12 +76,12 @@ public class Region implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Ciudad> getCiudadCollection() {
-        return ciudadCollection;
+    public List<Ciudad> getCiudadList() {
+        return ciudadList;
     }
 
-    public void setCiudadCollection(Collection<Ciudad> ciudadCollection) {
-        this.ciudadCollection = ciudadCollection;
+    public void setCiudadList(List<Ciudad> ciudadList) {
+        this.ciudadList = ciudadList;
     }
 
     @Override

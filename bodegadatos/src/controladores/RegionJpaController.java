@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package controllers;
+package controladores;
 
-import controllers.exceptions.NonexistentEntityException;
-import controllers.exceptions.PreexistingEntityException;
+import controladores.exceptions.NonexistentEntityException;
+import controladores.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import persistencia.Ciudad;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,7 +22,7 @@ import persistencia.Region;
 
 /**
  *
- * @author User
+ * @author Luis Carlos
  */
 public class RegionJpaController implements Serializable {
 
@@ -37,27 +36,27 @@ public class RegionJpaController implements Serializable {
     }
 
     public void create(Region region) throws PreexistingEntityException, Exception {
-        if (region.getCiudadCollection() == null) {
-            region.setCiudadCollection(new ArrayList<Ciudad>());
+        if (region.getCiudadList() == null) {
+            region.setCiudadList(new ArrayList<Ciudad>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Ciudad> attachedCiudadCollection = new ArrayList<Ciudad>();
-            for (Ciudad ciudadCollectionCiudadToAttach : region.getCiudadCollection()) {
-                ciudadCollectionCiudadToAttach = em.getReference(ciudadCollectionCiudadToAttach.getClass(), ciudadCollectionCiudadToAttach.getIdCiudad());
-                attachedCiudadCollection.add(ciudadCollectionCiudadToAttach);
+            List<Ciudad> attachedCiudadList = new ArrayList<Ciudad>();
+            for (Ciudad ciudadListCiudadToAttach : region.getCiudadList()) {
+                ciudadListCiudadToAttach = em.getReference(ciudadListCiudadToAttach.getClass(), ciudadListCiudadToAttach.getIdCiudad());
+                attachedCiudadList.add(ciudadListCiudadToAttach);
             }
-            region.setCiudadCollection(attachedCiudadCollection);
+            region.setCiudadList(attachedCiudadList);
             em.persist(region);
-            for (Ciudad ciudadCollectionCiudad : region.getCiudadCollection()) {
-                Region oldIdRegionOfCiudadCollectionCiudad = ciudadCollectionCiudad.getIdRegion();
-                ciudadCollectionCiudad.setIdRegion(region);
-                ciudadCollectionCiudad = em.merge(ciudadCollectionCiudad);
-                if (oldIdRegionOfCiudadCollectionCiudad != null) {
-                    oldIdRegionOfCiudadCollectionCiudad.getCiudadCollection().remove(ciudadCollectionCiudad);
-                    oldIdRegionOfCiudadCollectionCiudad = em.merge(oldIdRegionOfCiudadCollectionCiudad);
+            for (Ciudad ciudadListCiudad : region.getCiudadList()) {
+                Region oldIdRegionOfCiudadListCiudad = ciudadListCiudad.getIdRegion();
+                ciudadListCiudad.setIdRegion(region);
+                ciudadListCiudad = em.merge(ciudadListCiudad);
+                if (oldIdRegionOfCiudadListCiudad != null) {
+                    oldIdRegionOfCiudadListCiudad.getCiudadList().remove(ciudadListCiudad);
+                    oldIdRegionOfCiudadListCiudad = em.merge(oldIdRegionOfCiudadListCiudad);
                 }
             }
             em.getTransaction().commit();
@@ -79,30 +78,30 @@ public class RegionJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Region persistentRegion = em.find(Region.class, region.getIdRegion());
-            Collection<Ciudad> ciudadCollectionOld = persistentRegion.getCiudadCollection();
-            Collection<Ciudad> ciudadCollectionNew = region.getCiudadCollection();
-            Collection<Ciudad> attachedCiudadCollectionNew = new ArrayList<Ciudad>();
-            for (Ciudad ciudadCollectionNewCiudadToAttach : ciudadCollectionNew) {
-                ciudadCollectionNewCiudadToAttach = em.getReference(ciudadCollectionNewCiudadToAttach.getClass(), ciudadCollectionNewCiudadToAttach.getIdCiudad());
-                attachedCiudadCollectionNew.add(ciudadCollectionNewCiudadToAttach);
+            List<Ciudad> ciudadListOld = persistentRegion.getCiudadList();
+            List<Ciudad> ciudadListNew = region.getCiudadList();
+            List<Ciudad> attachedCiudadListNew = new ArrayList<Ciudad>();
+            for (Ciudad ciudadListNewCiudadToAttach : ciudadListNew) {
+                ciudadListNewCiudadToAttach = em.getReference(ciudadListNewCiudadToAttach.getClass(), ciudadListNewCiudadToAttach.getIdCiudad());
+                attachedCiudadListNew.add(ciudadListNewCiudadToAttach);
             }
-            ciudadCollectionNew = attachedCiudadCollectionNew;
-            region.setCiudadCollection(ciudadCollectionNew);
+            ciudadListNew = attachedCiudadListNew;
+            region.setCiudadList(ciudadListNew);
             region = em.merge(region);
-            for (Ciudad ciudadCollectionOldCiudad : ciudadCollectionOld) {
-                if (!ciudadCollectionNew.contains(ciudadCollectionOldCiudad)) {
-                    ciudadCollectionOldCiudad.setIdRegion(null);
-                    ciudadCollectionOldCiudad = em.merge(ciudadCollectionOldCiudad);
+            for (Ciudad ciudadListOldCiudad : ciudadListOld) {
+                if (!ciudadListNew.contains(ciudadListOldCiudad)) {
+                    ciudadListOldCiudad.setIdRegion(null);
+                    ciudadListOldCiudad = em.merge(ciudadListOldCiudad);
                 }
             }
-            for (Ciudad ciudadCollectionNewCiudad : ciudadCollectionNew) {
-                if (!ciudadCollectionOld.contains(ciudadCollectionNewCiudad)) {
-                    Region oldIdRegionOfCiudadCollectionNewCiudad = ciudadCollectionNewCiudad.getIdRegion();
-                    ciudadCollectionNewCiudad.setIdRegion(region);
-                    ciudadCollectionNewCiudad = em.merge(ciudadCollectionNewCiudad);
-                    if (oldIdRegionOfCiudadCollectionNewCiudad != null && !oldIdRegionOfCiudadCollectionNewCiudad.equals(region)) {
-                        oldIdRegionOfCiudadCollectionNewCiudad.getCiudadCollection().remove(ciudadCollectionNewCiudad);
-                        oldIdRegionOfCiudadCollectionNewCiudad = em.merge(oldIdRegionOfCiudadCollectionNewCiudad);
+            for (Ciudad ciudadListNewCiudad : ciudadListNew) {
+                if (!ciudadListOld.contains(ciudadListNewCiudad)) {
+                    Region oldIdRegionOfCiudadListNewCiudad = ciudadListNewCiudad.getIdRegion();
+                    ciudadListNewCiudad.setIdRegion(region);
+                    ciudadListNewCiudad = em.merge(ciudadListNewCiudad);
+                    if (oldIdRegionOfCiudadListNewCiudad != null && !oldIdRegionOfCiudadListNewCiudad.equals(region)) {
+                        oldIdRegionOfCiudadListNewCiudad.getCiudadList().remove(ciudadListNewCiudad);
+                        oldIdRegionOfCiudadListNewCiudad = em.merge(oldIdRegionOfCiudadListNewCiudad);
                     }
                 }
             }
@@ -135,10 +134,10 @@ public class RegionJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The region with id " + id + " no longer exists.", enfe);
             }
-            Collection<Ciudad> ciudadCollection = region.getCiudadCollection();
-            for (Ciudad ciudadCollectionCiudad : ciudadCollection) {
-                ciudadCollectionCiudad.setIdRegion(null);
-                ciudadCollectionCiudad = em.merge(ciudadCollectionCiudad);
+            List<Ciudad> ciudadList = region.getCiudadList();
+            for (Ciudad ciudadListCiudad : ciudadList) {
+                ciudadListCiudad.setIdRegion(null);
+                ciudadListCiudad = em.merge(ciudadListCiudad);
             }
             em.remove(region);
             em.getTransaction().commit();

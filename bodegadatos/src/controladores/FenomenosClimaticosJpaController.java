@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package controllers;
+package controladores;
 
-import controllers.exceptions.NonexistentEntityException;
-import controllers.exceptions.PreexistingEntityException;
+import controladores.exceptions.NonexistentEntityException;
+import controladores.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -16,7 +16,6 @@ import javax.persistence.criteria.Root;
 import persistencia.Ciudad;
 import persistencia.HistoricoPrecio;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,7 +23,7 @@ import persistencia.FenomenosClimaticos;
 
 /**
  *
- * @author User
+ * @author Luis Carlos
  */
 public class FenomenosClimaticosJpaController implements Serializable {
 
@@ -38,8 +37,8 @@ public class FenomenosClimaticosJpaController implements Serializable {
     }
 
     public void create(FenomenosClimaticos fenomenosClimaticos) throws PreexistingEntityException, Exception {
-        if (fenomenosClimaticos.getHistoricoPrecioCollection() == null) {
-            fenomenosClimaticos.setHistoricoPrecioCollection(new ArrayList<HistoricoPrecio>());
+        if (fenomenosClimaticos.getHistoricoPrecioList() == null) {
+            fenomenosClimaticos.setHistoricoPrecioList(new ArrayList<HistoricoPrecio>());
         }
         EntityManager em = null;
         try {
@@ -50,24 +49,24 @@ public class FenomenosClimaticosJpaController implements Serializable {
                 idCiudad = em.getReference(idCiudad.getClass(), idCiudad.getIdCiudad());
                 fenomenosClimaticos.setIdCiudad(idCiudad);
             }
-            Collection<HistoricoPrecio> attachedHistoricoPrecioCollection = new ArrayList<HistoricoPrecio>();
-            for (HistoricoPrecio historicoPrecioCollectionHistoricoPrecioToAttach : fenomenosClimaticos.getHistoricoPrecioCollection()) {
-                historicoPrecioCollectionHistoricoPrecioToAttach = em.getReference(historicoPrecioCollectionHistoricoPrecioToAttach.getClass(), historicoPrecioCollectionHistoricoPrecioToAttach.getIdHistoricoPrecio());
-                attachedHistoricoPrecioCollection.add(historicoPrecioCollectionHistoricoPrecioToAttach);
+            List<HistoricoPrecio> attachedHistoricoPrecioList = new ArrayList<HistoricoPrecio>();
+            for (HistoricoPrecio historicoPrecioListHistoricoPrecioToAttach : fenomenosClimaticos.getHistoricoPrecioList()) {
+                historicoPrecioListHistoricoPrecioToAttach = em.getReference(historicoPrecioListHistoricoPrecioToAttach.getClass(), historicoPrecioListHistoricoPrecioToAttach.getIdHistoricoPrecio());
+                attachedHistoricoPrecioList.add(historicoPrecioListHistoricoPrecioToAttach);
             }
-            fenomenosClimaticos.setHistoricoPrecioCollection(attachedHistoricoPrecioCollection);
+            fenomenosClimaticos.setHistoricoPrecioList(attachedHistoricoPrecioList);
             em.persist(fenomenosClimaticos);
             if (idCiudad != null) {
-                idCiudad.getFenomenosClimaticosCollection().add(fenomenosClimaticos);
+                idCiudad.getFenomenosClimaticosList().add(fenomenosClimaticos);
                 idCiudad = em.merge(idCiudad);
             }
-            for (HistoricoPrecio historicoPrecioCollectionHistoricoPrecio : fenomenosClimaticos.getHistoricoPrecioCollection()) {
-                FenomenosClimaticos oldIdFenomenoClimaticoOfHistoricoPrecioCollectionHistoricoPrecio = historicoPrecioCollectionHistoricoPrecio.getIdFenomenoClimatico();
-                historicoPrecioCollectionHistoricoPrecio.setIdFenomenoClimatico(fenomenosClimaticos);
-                historicoPrecioCollectionHistoricoPrecio = em.merge(historicoPrecioCollectionHistoricoPrecio);
-                if (oldIdFenomenoClimaticoOfHistoricoPrecioCollectionHistoricoPrecio != null) {
-                    oldIdFenomenoClimaticoOfHistoricoPrecioCollectionHistoricoPrecio.getHistoricoPrecioCollection().remove(historicoPrecioCollectionHistoricoPrecio);
-                    oldIdFenomenoClimaticoOfHistoricoPrecioCollectionHistoricoPrecio = em.merge(oldIdFenomenoClimaticoOfHistoricoPrecioCollectionHistoricoPrecio);
+            for (HistoricoPrecio historicoPrecioListHistoricoPrecio : fenomenosClimaticos.getHistoricoPrecioList()) {
+                FenomenosClimaticos oldIdFenomenoClimaticoOfHistoricoPrecioListHistoricoPrecio = historicoPrecioListHistoricoPrecio.getIdFenomenoClimatico();
+                historicoPrecioListHistoricoPrecio.setIdFenomenoClimatico(fenomenosClimaticos);
+                historicoPrecioListHistoricoPrecio = em.merge(historicoPrecioListHistoricoPrecio);
+                if (oldIdFenomenoClimaticoOfHistoricoPrecioListHistoricoPrecio != null) {
+                    oldIdFenomenoClimaticoOfHistoricoPrecioListHistoricoPrecio.getHistoricoPrecioList().remove(historicoPrecioListHistoricoPrecio);
+                    oldIdFenomenoClimaticoOfHistoricoPrecioListHistoricoPrecio = em.merge(oldIdFenomenoClimaticoOfHistoricoPrecioListHistoricoPrecio);
                 }
             }
             em.getTransaction().commit();
@@ -91,42 +90,42 @@ public class FenomenosClimaticosJpaController implements Serializable {
             FenomenosClimaticos persistentFenomenosClimaticos = em.find(FenomenosClimaticos.class, fenomenosClimaticos.getIdFenomenoClimatico());
             Ciudad idCiudadOld = persistentFenomenosClimaticos.getIdCiudad();
             Ciudad idCiudadNew = fenomenosClimaticos.getIdCiudad();
-            Collection<HistoricoPrecio> historicoPrecioCollectionOld = persistentFenomenosClimaticos.getHistoricoPrecioCollection();
-            Collection<HistoricoPrecio> historicoPrecioCollectionNew = fenomenosClimaticos.getHistoricoPrecioCollection();
+            List<HistoricoPrecio> historicoPrecioListOld = persistentFenomenosClimaticos.getHistoricoPrecioList();
+            List<HistoricoPrecio> historicoPrecioListNew = fenomenosClimaticos.getHistoricoPrecioList();
             if (idCiudadNew != null) {
                 idCiudadNew = em.getReference(idCiudadNew.getClass(), idCiudadNew.getIdCiudad());
                 fenomenosClimaticos.setIdCiudad(idCiudadNew);
             }
-            Collection<HistoricoPrecio> attachedHistoricoPrecioCollectionNew = new ArrayList<HistoricoPrecio>();
-            for (HistoricoPrecio historicoPrecioCollectionNewHistoricoPrecioToAttach : historicoPrecioCollectionNew) {
-                historicoPrecioCollectionNewHistoricoPrecioToAttach = em.getReference(historicoPrecioCollectionNewHistoricoPrecioToAttach.getClass(), historicoPrecioCollectionNewHistoricoPrecioToAttach.getIdHistoricoPrecio());
-                attachedHistoricoPrecioCollectionNew.add(historicoPrecioCollectionNewHistoricoPrecioToAttach);
+            List<HistoricoPrecio> attachedHistoricoPrecioListNew = new ArrayList<HistoricoPrecio>();
+            for (HistoricoPrecio historicoPrecioListNewHistoricoPrecioToAttach : historicoPrecioListNew) {
+                historicoPrecioListNewHistoricoPrecioToAttach = em.getReference(historicoPrecioListNewHistoricoPrecioToAttach.getClass(), historicoPrecioListNewHistoricoPrecioToAttach.getIdHistoricoPrecio());
+                attachedHistoricoPrecioListNew.add(historicoPrecioListNewHistoricoPrecioToAttach);
             }
-            historicoPrecioCollectionNew = attachedHistoricoPrecioCollectionNew;
-            fenomenosClimaticos.setHistoricoPrecioCollection(historicoPrecioCollectionNew);
+            historicoPrecioListNew = attachedHistoricoPrecioListNew;
+            fenomenosClimaticos.setHistoricoPrecioList(historicoPrecioListNew);
             fenomenosClimaticos = em.merge(fenomenosClimaticos);
             if (idCiudadOld != null && !idCiudadOld.equals(idCiudadNew)) {
-                idCiudadOld.getFenomenosClimaticosCollection().remove(fenomenosClimaticos);
+                idCiudadOld.getFenomenosClimaticosList().remove(fenomenosClimaticos);
                 idCiudadOld = em.merge(idCiudadOld);
             }
             if (idCiudadNew != null && !idCiudadNew.equals(idCiudadOld)) {
-                idCiudadNew.getFenomenosClimaticosCollection().add(fenomenosClimaticos);
+                idCiudadNew.getFenomenosClimaticosList().add(fenomenosClimaticos);
                 idCiudadNew = em.merge(idCiudadNew);
             }
-            for (HistoricoPrecio historicoPrecioCollectionOldHistoricoPrecio : historicoPrecioCollectionOld) {
-                if (!historicoPrecioCollectionNew.contains(historicoPrecioCollectionOldHistoricoPrecio)) {
-                    historicoPrecioCollectionOldHistoricoPrecio.setIdFenomenoClimatico(null);
-                    historicoPrecioCollectionOldHistoricoPrecio = em.merge(historicoPrecioCollectionOldHistoricoPrecio);
+            for (HistoricoPrecio historicoPrecioListOldHistoricoPrecio : historicoPrecioListOld) {
+                if (!historicoPrecioListNew.contains(historicoPrecioListOldHistoricoPrecio)) {
+                    historicoPrecioListOldHistoricoPrecio.setIdFenomenoClimatico(null);
+                    historicoPrecioListOldHistoricoPrecio = em.merge(historicoPrecioListOldHistoricoPrecio);
                 }
             }
-            for (HistoricoPrecio historicoPrecioCollectionNewHistoricoPrecio : historicoPrecioCollectionNew) {
-                if (!historicoPrecioCollectionOld.contains(historicoPrecioCollectionNewHistoricoPrecio)) {
-                    FenomenosClimaticos oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio = historicoPrecioCollectionNewHistoricoPrecio.getIdFenomenoClimatico();
-                    historicoPrecioCollectionNewHistoricoPrecio.setIdFenomenoClimatico(fenomenosClimaticos);
-                    historicoPrecioCollectionNewHistoricoPrecio = em.merge(historicoPrecioCollectionNewHistoricoPrecio);
-                    if (oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio != null && !oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio.equals(fenomenosClimaticos)) {
-                        oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio.getHistoricoPrecioCollection().remove(historicoPrecioCollectionNewHistoricoPrecio);
-                        oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio = em.merge(oldIdFenomenoClimaticoOfHistoricoPrecioCollectionNewHistoricoPrecio);
+            for (HistoricoPrecio historicoPrecioListNewHistoricoPrecio : historicoPrecioListNew) {
+                if (!historicoPrecioListOld.contains(historicoPrecioListNewHistoricoPrecio)) {
+                    FenomenosClimaticos oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio = historicoPrecioListNewHistoricoPrecio.getIdFenomenoClimatico();
+                    historicoPrecioListNewHistoricoPrecio.setIdFenomenoClimatico(fenomenosClimaticos);
+                    historicoPrecioListNewHistoricoPrecio = em.merge(historicoPrecioListNewHistoricoPrecio);
+                    if (oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio != null && !oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio.equals(fenomenosClimaticos)) {
+                        oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio.getHistoricoPrecioList().remove(historicoPrecioListNewHistoricoPrecio);
+                        oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio = em.merge(oldIdFenomenoClimaticoOfHistoricoPrecioListNewHistoricoPrecio);
                     }
                 }
             }
@@ -161,13 +160,13 @@ public class FenomenosClimaticosJpaController implements Serializable {
             }
             Ciudad idCiudad = fenomenosClimaticos.getIdCiudad();
             if (idCiudad != null) {
-                idCiudad.getFenomenosClimaticosCollection().remove(fenomenosClimaticos);
+                idCiudad.getFenomenosClimaticosList().remove(fenomenosClimaticos);
                 idCiudad = em.merge(idCiudad);
             }
-            Collection<HistoricoPrecio> historicoPrecioCollection = fenomenosClimaticos.getHistoricoPrecioCollection();
-            for (HistoricoPrecio historicoPrecioCollectionHistoricoPrecio : historicoPrecioCollection) {
-                historicoPrecioCollectionHistoricoPrecio.setIdFenomenoClimatico(null);
-                historicoPrecioCollectionHistoricoPrecio = em.merge(historicoPrecioCollectionHistoricoPrecio);
+            List<HistoricoPrecio> historicoPrecioList = fenomenosClimaticos.getHistoricoPrecioList();
+            for (HistoricoPrecio historicoPrecioListHistoricoPrecio : historicoPrecioList) {
+                historicoPrecioListHistoricoPrecio.setIdFenomenoClimatico(null);
+                historicoPrecioListHistoricoPrecio = em.merge(historicoPrecioListHistoricoPrecio);
             }
             em.remove(fenomenosClimaticos);
             em.getTransaction().commit();

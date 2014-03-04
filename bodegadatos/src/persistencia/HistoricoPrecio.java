@@ -7,6 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +16,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "historico_precio")
@@ -36,7 +39,7 @@ public class HistoricoPrecio implements Serializable {
     @Column(name = "id_historico_precio")
     private Long idHistoricoPrecio;
     @Column(name = "precio")
-    private Character precio;
+    private String precio;
     @JoinColumn(name = "id_tiempo", referencedColumnName = "id_tiempo")
     @ManyToOne
     private Tiempo idTiempo;
@@ -48,7 +51,12 @@ public class HistoricoPrecio implements Serializable {
     private Fecha idFecha;
     @JoinColumn(name = "id_anormalidad", referencedColumnName = "id_anormalidad")
     @ManyToOne
-    private Anormalidades idAnormalidad;
+    private Eventos idAnormalidad;
+    @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")
+    @ManyToOne
+    private Empresa idEmpresa;
+    @OneToMany(mappedBy = "idHistoricoPrecio")
+    private List<ReglasHistoricoPrecio> reglasHistoricoPrecioList;
 
     public HistoricoPrecio() {
     }
@@ -65,11 +73,11 @@ public class HistoricoPrecio implements Serializable {
         this.idHistoricoPrecio = idHistoricoPrecio;
     }
 
-    public Character getPrecio() {
+    public String getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Character precio) {
+    public void setPrecio(String precio) {
         this.precio = precio;
     }
 
@@ -97,12 +105,29 @@ public class HistoricoPrecio implements Serializable {
         this.idFecha = idFecha;
     }
 
-    public Anormalidades getIdAnormalidad() {
+    public Eventos getIdAnormalidad() {
         return idAnormalidad;
     }
 
-    public void setIdAnormalidad(Anormalidades idAnormalidad) {
+    public void setIdAnormalidad(Eventos idAnormalidad) {
         this.idAnormalidad = idAnormalidad;
+    }
+
+    public Empresa getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Empresa idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    @XmlTransient
+    public List<ReglasHistoricoPrecio> getReglasHistoricoPrecioList() {
+        return reglasHistoricoPrecioList;
+    }
+
+    public void setReglasHistoricoPrecioList(List<ReglasHistoricoPrecio> reglasHistoricoPrecioList) {
+        this.reglasHistoricoPrecioList = reglasHistoricoPrecioList;
     }
 
     @Override

@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "reglas")
@@ -41,11 +41,11 @@ public class Reglas implements Serializable {
     @Column(name = "regla")
     private String regla;
     @Column(name = "descripcion")
-    private Character descripcion;
+    private String descripcion;
     @Column(name = "valor")
     private Long valor;
     @OneToMany(mappedBy = "idRegla")
-    private Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollection;
+    private List<ReglasHistoricoPrecio> reglasHistoricoPrecioList;
 
     public Reglas() {
     }
@@ -70,11 +70,11 @@ public class Reglas implements Serializable {
         this.regla = regla;
     }
 
-    public Character getDescripcion() {
+    public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(Character descripcion) {
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
@@ -87,12 +87,12 @@ public class Reglas implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ReglasHistoricoConsumo> getReglasHistoricoConsumoCollection() {
-        return reglasHistoricoConsumoCollection;
+    public List<ReglasHistoricoPrecio> getReglasHistoricoPrecioList() {
+        return reglasHistoricoPrecioList;
     }
 
-    public void setReglasHistoricoConsumoCollection(Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollection) {
-        this.reglasHistoricoConsumoCollection = reglasHistoricoConsumoCollection;
+    public void setReglasHistoricoPrecioList(List<ReglasHistoricoPrecio> reglasHistoricoPrecioList) {
+        this.reglasHistoricoPrecioList = reglasHistoricoPrecioList;
     }
 
     @Override

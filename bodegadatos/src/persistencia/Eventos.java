@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,17 +23,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
-@Table(name = "anormalidades")
+@Table(name = "eventos")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Anormalidades.findAll", query = "SELECT a FROM Anormalidades a"),
-    @NamedQuery(name = "Anormalidades.findByIdAnormalidad", query = "SELECT a FROM Anormalidades a WHERE a.idAnormalidad = :idAnormalidad"),
-    @NamedQuery(name = "Anormalidades.findByAnormalidad", query = "SELECT a FROM Anormalidades a WHERE a.anormalidad = :anormalidad"),
-    @NamedQuery(name = "Anormalidades.findByDescripcion", query = "SELECT a FROM Anormalidades a WHERE a.descripcion = :descripcion")})
-public class Anormalidades implements Serializable {
+    @NamedQuery(name = "Eventos.findAll", query = "SELECT e FROM Eventos e"),
+    @NamedQuery(name = "Eventos.findByIdAnormalidad", query = "SELECT e FROM Eventos e WHERE e.idAnormalidad = :idAnormalidad"),
+    @NamedQuery(name = "Eventos.findByAnormalidad", query = "SELECT e FROM Eventos e WHERE e.anormalidad = :anormalidad"),
+    @NamedQuery(name = "Eventos.findByDescripcion", query = "SELECT e FROM Eventos e WHERE e.descripcion = :descripcion")})
+public class Eventos implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -43,16 +43,16 @@ public class Anormalidades implements Serializable {
     private String anormalidad;
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(mappedBy = "idAnormalidad")
-    private Collection<HistoricoPrecio> historicoPrecioCollection;
     @JoinColumn(name = "id_ciudad", referencedColumnName = "id_ciudad")
     @ManyToOne
     private Ciudad idCiudad;
+    @OneToMany(mappedBy = "idAnormalidad")
+    private List<HistoricoPrecio> historicoPrecioList;
 
-    public Anormalidades() {
+    public Eventos() {
     }
 
-    public Anormalidades(Long idAnormalidad) {
+    public Eventos(Long idAnormalidad) {
         this.idAnormalidad = idAnormalidad;
     }
 
@@ -80,21 +80,21 @@ public class Anormalidades implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @XmlTransient
-    public Collection<HistoricoPrecio> getHistoricoPrecioCollection() {
-        return historicoPrecioCollection;
-    }
-
-    public void setHistoricoPrecioCollection(Collection<HistoricoPrecio> historicoPrecioCollection) {
-        this.historicoPrecioCollection = historicoPrecioCollection;
-    }
-
     public Ciudad getIdCiudad() {
         return idCiudad;
     }
 
     public void setIdCiudad(Ciudad idCiudad) {
         this.idCiudad = idCiudad;
+    }
+
+    @XmlTransient
+    public List<HistoricoPrecio> getHistoricoPrecioList() {
+        return historicoPrecioList;
+    }
+
+    public void setHistoricoPrecioList(List<HistoricoPrecio> historicoPrecioList) {
+        this.historicoPrecioList = historicoPrecioList;
     }
 
     @Override
@@ -107,10 +107,10 @@ public class Anormalidades implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Anormalidades)) {
+        if (!(object instanceof Eventos)) {
             return false;
         }
-        Anormalidades other = (Anormalidades) object;
+        Eventos other = (Eventos) object;
         if ((this.idAnormalidad == null && other.idAnormalidad != null) || (this.idAnormalidad != null && !this.idAnormalidad.equals(other.idAnormalidad))) {
             return false;
         }
@@ -119,7 +119,7 @@ public class Anormalidades implements Serializable {
 
     @Override
     public String toString() {
-        return "persistencia.Anormalidades[ idAnormalidad=" + idAnormalidad + " ]";
+        return "persistencia.Eventos[ idAnormalidad=" + idAnormalidad + " ]";
     }
     
 }

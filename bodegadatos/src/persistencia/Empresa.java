@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "empresa")
@@ -39,7 +39,9 @@ public class Empresa implements Serializable {
     @Column(name = "empresa")
     private String empresa;
     @OneToMany(mappedBy = "idEmpresa")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
+    @OneToMany(mappedBy = "idEmpresa")
+    private List<HistoricoPrecio> historicoPrecioList;
 
     public Empresa() {
     }
@@ -65,12 +67,21 @@ public class Empresa implements Serializable {
     }
 
     @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
+    }
+
+    @XmlTransient
+    public List<HistoricoPrecio> getHistoricoPrecioList() {
+        return historicoPrecioList;
+    }
+
+    public void setHistoricoPrecioList(List<HistoricoPrecio> historicoPrecioList) {
+        this.historicoPrecioList = historicoPrecioList;
     }
 
     @Override

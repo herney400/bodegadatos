@@ -4,11 +4,14 @@
  * and open the template in the editor.
  */
 
-package controllers;
+package controladores;
 
-import controllers.exceptions.NonexistentEntityException;
-import controllers.exceptions.PreexistingEntityException;
+import controladores.exceptions.NonexistentEntityException;
+import controladores.exceptions.PreexistingEntityException;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,17 +22,11 @@ import persistencia.Fecha;
 import persistencia.Empresa;
 import persistencia.Clientes;
 import persistencia.Ciudad;
-import persistencia.ReglasHistoricoConsumo;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import persistencia.HistoricoConsumo;
 
 /**
  *
- * @author User
+ * @author Luis Carlos
  */
 public class HistoricoConsumoJpaController implements Serializable {
 
@@ -43,9 +40,6 @@ public class HistoricoConsumoJpaController implements Serializable {
     }
 
     public void create(HistoricoConsumo historicoConsumo) throws PreexistingEntityException, Exception {
-        if (historicoConsumo.getReglasHistoricoConsumoCollection() == null) {
-            historicoConsumo.setReglasHistoricoConsumoCollection(new ArrayList<ReglasHistoricoConsumo>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -80,45 +74,30 @@ public class HistoricoConsumoJpaController implements Serializable {
                 idCiudad = em.getReference(idCiudad.getClass(), idCiudad.getIdCiudad());
                 historicoConsumo.setIdCiudad(idCiudad);
             }
-            Collection<ReglasHistoricoConsumo> attachedReglasHistoricoConsumoCollection = new ArrayList<ReglasHistoricoConsumo>();
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionReglasHistoricoConsumoToAttach : historicoConsumo.getReglasHistoricoConsumoCollection()) {
-                reglasHistoricoConsumoCollectionReglasHistoricoConsumoToAttach = em.getReference(reglasHistoricoConsumoCollectionReglasHistoricoConsumoToAttach.getClass(), reglasHistoricoConsumoCollectionReglasHistoricoConsumoToAttach.getIdReglasHistoricoPrecio());
-                attachedReglasHistoricoConsumoCollection.add(reglasHistoricoConsumoCollectionReglasHistoricoConsumoToAttach);
-            }
-            historicoConsumo.setReglasHistoricoConsumoCollection(attachedReglasHistoricoConsumoCollection);
             em.persist(historicoConsumo);
             if (idTiempo != null) {
-                idTiempo.getHistoricoConsumoCollection().add(historicoConsumo);
+                idTiempo.getHistoricoConsumoList().add(historicoConsumo);
                 idTiempo = em.merge(idTiempo);
             }
             if (idMedida != null) {
-                idMedida.getHistoricoConsumoCollection().add(historicoConsumo);
+                idMedida.getHistoricoConsumoList().add(historicoConsumo);
                 idMedida = em.merge(idMedida);
             }
             if (idFecha != null) {
-                idFecha.getHistoricoConsumoCollection().add(historicoConsumo);
+                idFecha.getHistoricoConsumoList().add(historicoConsumo);
                 idFecha = em.merge(idFecha);
             }
             if (idEmpresa != null) {
-                idEmpresa.getHistoricoConsumoCollection().add(historicoConsumo);
+                idEmpresa.getHistoricoConsumoList().add(historicoConsumo);
                 idEmpresa = em.merge(idEmpresa);
             }
             if (idCliente != null) {
-                idCliente.getHistoricoConsumoCollection().add(historicoConsumo);
+                idCliente.getHistoricoConsumoList().add(historicoConsumo);
                 idCliente = em.merge(idCliente);
             }
             if (idCiudad != null) {
-                idCiudad.getHistoricoConsumoCollection().add(historicoConsumo);
+                idCiudad.getHistoricoConsumoList().add(historicoConsumo);
                 idCiudad = em.merge(idCiudad);
-            }
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionReglasHistoricoConsumo : historicoConsumo.getReglasHistoricoConsumoCollection()) {
-                HistoricoConsumo oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionReglasHistoricoConsumo = reglasHistoricoConsumoCollectionReglasHistoricoConsumo.getIdHistoricoConsumo();
-                reglasHistoricoConsumoCollectionReglasHistoricoConsumo.setIdHistoricoConsumo(historicoConsumo);
-                reglasHistoricoConsumoCollectionReglasHistoricoConsumo = em.merge(reglasHistoricoConsumoCollectionReglasHistoricoConsumo);
-                if (oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionReglasHistoricoConsumo != null) {
-                    oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionReglasHistoricoConsumo.getReglasHistoricoConsumoCollection().remove(reglasHistoricoConsumoCollectionReglasHistoricoConsumo);
-                    oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionReglasHistoricoConsumo = em.merge(oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionReglasHistoricoConsumo);
-                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -151,8 +130,6 @@ public class HistoricoConsumoJpaController implements Serializable {
             Clientes idClienteNew = historicoConsumo.getIdCliente();
             Ciudad idCiudadOld = persistentHistoricoConsumo.getIdCiudad();
             Ciudad idCiudadNew = historicoConsumo.getIdCiudad();
-            Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollectionOld = persistentHistoricoConsumo.getReglasHistoricoConsumoCollection();
-            Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollectionNew = historicoConsumo.getReglasHistoricoConsumoCollection();
             if (idTiempoNew != null) {
                 idTiempoNew = em.getReference(idTiempoNew.getClass(), idTiempoNew.getIdTiempo());
                 historicoConsumo.setIdTiempo(idTiempoNew);
@@ -177,78 +154,54 @@ public class HistoricoConsumoJpaController implements Serializable {
                 idCiudadNew = em.getReference(idCiudadNew.getClass(), idCiudadNew.getIdCiudad());
                 historicoConsumo.setIdCiudad(idCiudadNew);
             }
-            Collection<ReglasHistoricoConsumo> attachedReglasHistoricoConsumoCollectionNew = new ArrayList<ReglasHistoricoConsumo>();
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionNewReglasHistoricoConsumoToAttach : reglasHistoricoConsumoCollectionNew) {
-                reglasHistoricoConsumoCollectionNewReglasHistoricoConsumoToAttach = em.getReference(reglasHistoricoConsumoCollectionNewReglasHistoricoConsumoToAttach.getClass(), reglasHistoricoConsumoCollectionNewReglasHistoricoConsumoToAttach.getIdReglasHistoricoPrecio());
-                attachedReglasHistoricoConsumoCollectionNew.add(reglasHistoricoConsumoCollectionNewReglasHistoricoConsumoToAttach);
-            }
-            reglasHistoricoConsumoCollectionNew = attachedReglasHistoricoConsumoCollectionNew;
-            historicoConsumo.setReglasHistoricoConsumoCollection(reglasHistoricoConsumoCollectionNew);
             historicoConsumo = em.merge(historicoConsumo);
             if (idTiempoOld != null && !idTiempoOld.equals(idTiempoNew)) {
-                idTiempoOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idTiempoOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idTiempoOld = em.merge(idTiempoOld);
             }
             if (idTiempoNew != null && !idTiempoNew.equals(idTiempoOld)) {
-                idTiempoNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idTiempoNew.getHistoricoConsumoList().add(historicoConsumo);
                 idTiempoNew = em.merge(idTiempoNew);
             }
             if (idMedidaOld != null && !idMedidaOld.equals(idMedidaNew)) {
-                idMedidaOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idMedidaOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idMedidaOld = em.merge(idMedidaOld);
             }
             if (idMedidaNew != null && !idMedidaNew.equals(idMedidaOld)) {
-                idMedidaNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idMedidaNew.getHistoricoConsumoList().add(historicoConsumo);
                 idMedidaNew = em.merge(idMedidaNew);
             }
             if (idFechaOld != null && !idFechaOld.equals(idFechaNew)) {
-                idFechaOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idFechaOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idFechaOld = em.merge(idFechaOld);
             }
             if (idFechaNew != null && !idFechaNew.equals(idFechaOld)) {
-                idFechaNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idFechaNew.getHistoricoConsumoList().add(historicoConsumo);
                 idFechaNew = em.merge(idFechaNew);
             }
             if (idEmpresaOld != null && !idEmpresaOld.equals(idEmpresaNew)) {
-                idEmpresaOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idEmpresaOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idEmpresaOld = em.merge(idEmpresaOld);
             }
             if (idEmpresaNew != null && !idEmpresaNew.equals(idEmpresaOld)) {
-                idEmpresaNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idEmpresaNew.getHistoricoConsumoList().add(historicoConsumo);
                 idEmpresaNew = em.merge(idEmpresaNew);
             }
             if (idClienteOld != null && !idClienteOld.equals(idClienteNew)) {
-                idClienteOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idClienteOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idClienteOld = em.merge(idClienteOld);
             }
             if (idClienteNew != null && !idClienteNew.equals(idClienteOld)) {
-                idClienteNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idClienteNew.getHistoricoConsumoList().add(historicoConsumo);
                 idClienteNew = em.merge(idClienteNew);
             }
             if (idCiudadOld != null && !idCiudadOld.equals(idCiudadNew)) {
-                idCiudadOld.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idCiudadOld.getHistoricoConsumoList().remove(historicoConsumo);
                 idCiudadOld = em.merge(idCiudadOld);
             }
             if (idCiudadNew != null && !idCiudadNew.equals(idCiudadOld)) {
-                idCiudadNew.getHistoricoConsumoCollection().add(historicoConsumo);
+                idCiudadNew.getHistoricoConsumoList().add(historicoConsumo);
                 idCiudadNew = em.merge(idCiudadNew);
-            }
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionOldReglasHistoricoConsumo : reglasHistoricoConsumoCollectionOld) {
-                if (!reglasHistoricoConsumoCollectionNew.contains(reglasHistoricoConsumoCollectionOldReglasHistoricoConsumo)) {
-                    reglasHistoricoConsumoCollectionOldReglasHistoricoConsumo.setIdHistoricoConsumo(null);
-                    reglasHistoricoConsumoCollectionOldReglasHistoricoConsumo = em.merge(reglasHistoricoConsumoCollectionOldReglasHistoricoConsumo);
-                }
-            }
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo : reglasHistoricoConsumoCollectionNew) {
-                if (!reglasHistoricoConsumoCollectionOld.contains(reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo)) {
-                    HistoricoConsumo oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo = reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo.getIdHistoricoConsumo();
-                    reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo.setIdHistoricoConsumo(historicoConsumo);
-                    reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo = em.merge(reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo);
-                    if (oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo != null && !oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo.equals(historicoConsumo)) {
-                        oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo.getReglasHistoricoConsumoCollection().remove(reglasHistoricoConsumoCollectionNewReglasHistoricoConsumo);
-                        oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo = em.merge(oldIdHistoricoConsumoOfReglasHistoricoConsumoCollectionNewReglasHistoricoConsumo);
-                    }
-                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -281,38 +234,33 @@ public class HistoricoConsumoJpaController implements Serializable {
             }
             Tiempo idTiempo = historicoConsumo.getIdTiempo();
             if (idTiempo != null) {
-                idTiempo.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idTiempo.getHistoricoConsumoList().remove(historicoConsumo);
                 idTiempo = em.merge(idTiempo);
             }
             Medida idMedida = historicoConsumo.getIdMedida();
             if (idMedida != null) {
-                idMedida.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idMedida.getHistoricoConsumoList().remove(historicoConsumo);
                 idMedida = em.merge(idMedida);
             }
             Fecha idFecha = historicoConsumo.getIdFecha();
             if (idFecha != null) {
-                idFecha.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idFecha.getHistoricoConsumoList().remove(historicoConsumo);
                 idFecha = em.merge(idFecha);
             }
             Empresa idEmpresa = historicoConsumo.getIdEmpresa();
             if (idEmpresa != null) {
-                idEmpresa.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idEmpresa.getHistoricoConsumoList().remove(historicoConsumo);
                 idEmpresa = em.merge(idEmpresa);
             }
             Clientes idCliente = historicoConsumo.getIdCliente();
             if (idCliente != null) {
-                idCliente.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idCliente.getHistoricoConsumoList().remove(historicoConsumo);
                 idCliente = em.merge(idCliente);
             }
             Ciudad idCiudad = historicoConsumo.getIdCiudad();
             if (idCiudad != null) {
-                idCiudad.getHistoricoConsumoCollection().remove(historicoConsumo);
+                idCiudad.getHistoricoConsumoList().remove(historicoConsumo);
                 idCiudad = em.merge(idCiudad);
-            }
-            Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollection = historicoConsumo.getReglasHistoricoConsumoCollection();
-            for (ReglasHistoricoConsumo reglasHistoricoConsumoCollectionReglasHistoricoConsumo : reglasHistoricoConsumoCollection) {
-                reglasHistoricoConsumoCollectionReglasHistoricoConsumo.setIdHistoricoConsumo(null);
-                reglasHistoricoConsumoCollectionReglasHistoricoConsumo = em.merge(reglasHistoricoConsumoCollectionReglasHistoricoConsumo);
             }
             em.remove(historicoConsumo);
             em.getTransaction().commit();

@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-package controllers;
+package controladores;
 
-import controllers.exceptions.NonexistentEntityException;
-import controllers.exceptions.PreexistingEntityException;
+import controladores.exceptions.NonexistentEntityException;
+import controladores.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import persistencia.HistoricoConsumo;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,7 +22,7 @@ import persistencia.Medida;
 
 /**
  *
- * @author User
+ * @author Luis Carlos
  */
 public class MedidaJpaController implements Serializable {
 
@@ -37,27 +36,27 @@ public class MedidaJpaController implements Serializable {
     }
 
     public void create(Medida medida) throws PreexistingEntityException, Exception {
-        if (medida.getHistoricoConsumoCollection() == null) {
-            medida.setHistoricoConsumoCollection(new ArrayList<HistoricoConsumo>());
+        if (medida.getHistoricoConsumoList() == null) {
+            medida.setHistoricoConsumoList(new ArrayList<HistoricoConsumo>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<HistoricoConsumo> attachedHistoricoConsumoCollection = new ArrayList<HistoricoConsumo>();
-            for (HistoricoConsumo historicoConsumoCollectionHistoricoConsumoToAttach : medida.getHistoricoConsumoCollection()) {
-                historicoConsumoCollectionHistoricoConsumoToAttach = em.getReference(historicoConsumoCollectionHistoricoConsumoToAttach.getClass(), historicoConsumoCollectionHistoricoConsumoToAttach.getIdHistoricoConsumo());
-                attachedHistoricoConsumoCollection.add(historicoConsumoCollectionHistoricoConsumoToAttach);
+            List<HistoricoConsumo> attachedHistoricoConsumoList = new ArrayList<HistoricoConsumo>();
+            for (HistoricoConsumo historicoConsumoListHistoricoConsumoToAttach : medida.getHistoricoConsumoList()) {
+                historicoConsumoListHistoricoConsumoToAttach = em.getReference(historicoConsumoListHistoricoConsumoToAttach.getClass(), historicoConsumoListHistoricoConsumoToAttach.getIdHistoricoConsumo());
+                attachedHistoricoConsumoList.add(historicoConsumoListHistoricoConsumoToAttach);
             }
-            medida.setHistoricoConsumoCollection(attachedHistoricoConsumoCollection);
+            medida.setHistoricoConsumoList(attachedHistoricoConsumoList);
             em.persist(medida);
-            for (HistoricoConsumo historicoConsumoCollectionHistoricoConsumo : medida.getHistoricoConsumoCollection()) {
-                Medida oldIdMedidaOfHistoricoConsumoCollectionHistoricoConsumo = historicoConsumoCollectionHistoricoConsumo.getIdMedida();
-                historicoConsumoCollectionHistoricoConsumo.setIdMedida(medida);
-                historicoConsumoCollectionHistoricoConsumo = em.merge(historicoConsumoCollectionHistoricoConsumo);
-                if (oldIdMedidaOfHistoricoConsumoCollectionHistoricoConsumo != null) {
-                    oldIdMedidaOfHistoricoConsumoCollectionHistoricoConsumo.getHistoricoConsumoCollection().remove(historicoConsumoCollectionHistoricoConsumo);
-                    oldIdMedidaOfHistoricoConsumoCollectionHistoricoConsumo = em.merge(oldIdMedidaOfHistoricoConsumoCollectionHistoricoConsumo);
+            for (HistoricoConsumo historicoConsumoListHistoricoConsumo : medida.getHistoricoConsumoList()) {
+                Medida oldIdMedidaOfHistoricoConsumoListHistoricoConsumo = historicoConsumoListHistoricoConsumo.getIdMedida();
+                historicoConsumoListHistoricoConsumo.setIdMedida(medida);
+                historicoConsumoListHistoricoConsumo = em.merge(historicoConsumoListHistoricoConsumo);
+                if (oldIdMedidaOfHistoricoConsumoListHistoricoConsumo != null) {
+                    oldIdMedidaOfHistoricoConsumoListHistoricoConsumo.getHistoricoConsumoList().remove(historicoConsumoListHistoricoConsumo);
+                    oldIdMedidaOfHistoricoConsumoListHistoricoConsumo = em.merge(oldIdMedidaOfHistoricoConsumoListHistoricoConsumo);
                 }
             }
             em.getTransaction().commit();
@@ -79,30 +78,30 @@ public class MedidaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Medida persistentMedida = em.find(Medida.class, medida.getIdMedida());
-            Collection<HistoricoConsumo> historicoConsumoCollectionOld = persistentMedida.getHistoricoConsumoCollection();
-            Collection<HistoricoConsumo> historicoConsumoCollectionNew = medida.getHistoricoConsumoCollection();
-            Collection<HistoricoConsumo> attachedHistoricoConsumoCollectionNew = new ArrayList<HistoricoConsumo>();
-            for (HistoricoConsumo historicoConsumoCollectionNewHistoricoConsumoToAttach : historicoConsumoCollectionNew) {
-                historicoConsumoCollectionNewHistoricoConsumoToAttach = em.getReference(historicoConsumoCollectionNewHistoricoConsumoToAttach.getClass(), historicoConsumoCollectionNewHistoricoConsumoToAttach.getIdHistoricoConsumo());
-                attachedHistoricoConsumoCollectionNew.add(historicoConsumoCollectionNewHistoricoConsumoToAttach);
+            List<HistoricoConsumo> historicoConsumoListOld = persistentMedida.getHistoricoConsumoList();
+            List<HistoricoConsumo> historicoConsumoListNew = medida.getHistoricoConsumoList();
+            List<HistoricoConsumo> attachedHistoricoConsumoListNew = new ArrayList<HistoricoConsumo>();
+            for (HistoricoConsumo historicoConsumoListNewHistoricoConsumoToAttach : historicoConsumoListNew) {
+                historicoConsumoListNewHistoricoConsumoToAttach = em.getReference(historicoConsumoListNewHistoricoConsumoToAttach.getClass(), historicoConsumoListNewHistoricoConsumoToAttach.getIdHistoricoConsumo());
+                attachedHistoricoConsumoListNew.add(historicoConsumoListNewHistoricoConsumoToAttach);
             }
-            historicoConsumoCollectionNew = attachedHistoricoConsumoCollectionNew;
-            medida.setHistoricoConsumoCollection(historicoConsumoCollectionNew);
+            historicoConsumoListNew = attachedHistoricoConsumoListNew;
+            medida.setHistoricoConsumoList(historicoConsumoListNew);
             medida = em.merge(medida);
-            for (HistoricoConsumo historicoConsumoCollectionOldHistoricoConsumo : historicoConsumoCollectionOld) {
-                if (!historicoConsumoCollectionNew.contains(historicoConsumoCollectionOldHistoricoConsumo)) {
-                    historicoConsumoCollectionOldHistoricoConsumo.setIdMedida(null);
-                    historicoConsumoCollectionOldHistoricoConsumo = em.merge(historicoConsumoCollectionOldHistoricoConsumo);
+            for (HistoricoConsumo historicoConsumoListOldHistoricoConsumo : historicoConsumoListOld) {
+                if (!historicoConsumoListNew.contains(historicoConsumoListOldHistoricoConsumo)) {
+                    historicoConsumoListOldHistoricoConsumo.setIdMedida(null);
+                    historicoConsumoListOldHistoricoConsumo = em.merge(historicoConsumoListOldHistoricoConsumo);
                 }
             }
-            for (HistoricoConsumo historicoConsumoCollectionNewHistoricoConsumo : historicoConsumoCollectionNew) {
-                if (!historicoConsumoCollectionOld.contains(historicoConsumoCollectionNewHistoricoConsumo)) {
-                    Medida oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo = historicoConsumoCollectionNewHistoricoConsumo.getIdMedida();
-                    historicoConsumoCollectionNewHistoricoConsumo.setIdMedida(medida);
-                    historicoConsumoCollectionNewHistoricoConsumo = em.merge(historicoConsumoCollectionNewHistoricoConsumo);
-                    if (oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo != null && !oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo.equals(medida)) {
-                        oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo.getHistoricoConsumoCollection().remove(historicoConsumoCollectionNewHistoricoConsumo);
-                        oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo = em.merge(oldIdMedidaOfHistoricoConsumoCollectionNewHistoricoConsumo);
+            for (HistoricoConsumo historicoConsumoListNewHistoricoConsumo : historicoConsumoListNew) {
+                if (!historicoConsumoListOld.contains(historicoConsumoListNewHistoricoConsumo)) {
+                    Medida oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo = historicoConsumoListNewHistoricoConsumo.getIdMedida();
+                    historicoConsumoListNewHistoricoConsumo.setIdMedida(medida);
+                    historicoConsumoListNewHistoricoConsumo = em.merge(historicoConsumoListNewHistoricoConsumo);
+                    if (oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo != null && !oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo.equals(medida)) {
+                        oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo.getHistoricoConsumoList().remove(historicoConsumoListNewHistoricoConsumo);
+                        oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo = em.merge(oldIdMedidaOfHistoricoConsumoListNewHistoricoConsumo);
                     }
                 }
             }
@@ -135,10 +134,10 @@ public class MedidaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The medida with id " + id + " no longer exists.", enfe);
             }
-            Collection<HistoricoConsumo> historicoConsumoCollection = medida.getHistoricoConsumoCollection();
-            for (HistoricoConsumo historicoConsumoCollectionHistoricoConsumo : historicoConsumoCollection) {
-                historicoConsumoCollectionHistoricoConsumo.setIdMedida(null);
-                historicoConsumoCollectionHistoricoConsumo = em.merge(historicoConsumoCollectionHistoricoConsumo);
+            List<HistoricoConsumo> historicoConsumoList = medida.getHistoricoConsumoList();
+            for (HistoricoConsumo historicoConsumoListHistoricoConsumo : historicoConsumoList) {
+                historicoConsumoListHistoricoConsumo.setIdMedida(null);
+                historicoConsumoListHistoricoConsumo = em.merge(historicoConsumoListHistoricoConsumo);
             }
             em.remove(medida);
             em.getTransaction().commit();

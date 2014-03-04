@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "tiempo")
@@ -45,9 +45,9 @@ public class Tiempo implements Serializable {
     @Column(name = "franja_horaria")
     private String franjaHoraria;
     @OneToMany(mappedBy = "idTiempo")
-    private Collection<HistoricoPrecio> historicoPrecioCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
     @OneToMany(mappedBy = "idTiempo")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<HistoricoPrecio> historicoPrecioList;
 
     public Tiempo() {
     }
@@ -89,21 +89,21 @@ public class Tiempo implements Serializable {
     }
 
     @XmlTransient
-    public Collection<HistoricoPrecio> getHistoricoPrecioCollection() {
-        return historicoPrecioCollection;
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
     }
 
-    public void setHistoricoPrecioCollection(Collection<HistoricoPrecio> historicoPrecioCollection) {
-        this.historicoPrecioCollection = historicoPrecioCollection;
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
     }
 
     @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public List<HistoricoPrecio> getHistoricoPrecioList() {
+        return historicoPrecioList;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setHistoricoPrecioList(List<HistoricoPrecio> historicoPrecioList) {
+        this.historicoPrecioList = historicoPrecioList;
     }
 
     @Override

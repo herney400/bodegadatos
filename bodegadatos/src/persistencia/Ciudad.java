@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "ciudad")
@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Ciudad.findAll", query = "SELECT c FROM Ciudad c"),
     @NamedQuery(name = "Ciudad.findByIdCiudad", query = "SELECT c FROM Ciudad c WHERE c.idCiudad = :idCiudad"),
-    @NamedQuery(name = "Ciudad.findByCiudad", query = "SELECT c FROM Ciudad c WHERE c.ciudad = :ciudad")})
+    @NamedQuery(name = "Ciudad.findByCiudad", query = "SELECT c FROM Ciudad c WHERE c.ciudad = :ciudad"),
+    @NamedQuery(name = "Ciudad.findByAltitud", query = "SELECT c FROM Ciudad c WHERE c.altitud = :altitud"),
+    @NamedQuery(name = "Ciudad.findByZona", query = "SELECT c FROM Ciudad c WHERE c.zona = :zona")})
 public class Ciudad implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,16 +41,20 @@ public class Ciudad implements Serializable {
     @Column(name = "id_ciudad")
     private Long idCiudad;
     @Column(name = "ciudad")
-    private Character ciudad;
+    private String ciudad;
+    @Column(name = "altitud")
+    private Long altitud;
+    @Column(name = "zona")
+    private String zona;
     @JoinColumn(name = "id_region", referencedColumnName = "id_region")
     @ManyToOne
     private Region idRegion;
     @OneToMany(mappedBy = "idCiudad")
-    private Collection<FenomenosClimaticos> fenomenosClimaticosCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
     @OneToMany(mappedBy = "idCiudad")
-    private Collection<Anormalidades> anormalidadesCollection;
+    private List<Eventos> eventosList;
     @OneToMany(mappedBy = "idCiudad")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<FenomenosClimaticos> fenomenosClimaticosList;
 
     public Ciudad() {
     }
@@ -65,12 +71,28 @@ public class Ciudad implements Serializable {
         this.idCiudad = idCiudad;
     }
 
-    public Character getCiudad() {
+    public String getCiudad() {
         return ciudad;
     }
 
-    public void setCiudad(Character ciudad) {
+    public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
+    }
+
+    public Long getAltitud() {
+        return altitud;
+    }
+
+    public void setAltitud(Long altitud) {
+        this.altitud = altitud;
+    }
+
+    public String getZona() {
+        return zona;
+    }
+
+    public void setZona(String zona) {
+        this.zona = zona;
     }
 
     public Region getIdRegion() {
@@ -82,30 +104,30 @@ public class Ciudad implements Serializable {
     }
 
     @XmlTransient
-    public Collection<FenomenosClimaticos> getFenomenosClimaticosCollection() {
-        return fenomenosClimaticosCollection;
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
     }
 
-    public void setFenomenosClimaticosCollection(Collection<FenomenosClimaticos> fenomenosClimaticosCollection) {
-        this.fenomenosClimaticosCollection = fenomenosClimaticosCollection;
-    }
-
-    @XmlTransient
-    public Collection<Anormalidades> getAnormalidadesCollection() {
-        return anormalidadesCollection;
-    }
-
-    public void setAnormalidadesCollection(Collection<Anormalidades> anormalidadesCollection) {
-        this.anormalidadesCollection = anormalidadesCollection;
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
     }
 
     @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public List<Eventos> getEventosList() {
+        return eventosList;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setEventosList(List<Eventos> eventosList) {
+        this.eventosList = eventosList;
+    }
+
+    @XmlTransient
+    public List<FenomenosClimaticos> getFenomenosClimaticosList() {
+        return fenomenosClimaticosList;
+    }
+
+    public void setFenomenosClimaticosList(List<FenomenosClimaticos> fenomenosClimaticosList) {
+        this.fenomenosClimaticosList = fenomenosClimaticosList;
     }
 
     @Override

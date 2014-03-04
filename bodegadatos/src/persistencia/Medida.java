@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "medida")
@@ -39,7 +39,7 @@ public class Medida implements Serializable {
     @Column(name = "medida")
     private String medida;
     @OneToMany(mappedBy = "idMedida")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
 
     public Medida() {
     }
@@ -65,12 +65,12 @@ public class Medida implements Serializable {
     }
 
     @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
     }
 
     @Override

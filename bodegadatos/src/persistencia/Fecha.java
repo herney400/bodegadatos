@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "fecha")
@@ -45,9 +45,11 @@ public class Fecha implements Serializable {
     @Column(name = "dia")
     private Long dia;
     @OneToMany(mappedBy = "idFecha")
-    private Collection<HistoricoPrecio> historicoPrecioCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
     @OneToMany(mappedBy = "idFecha")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<HistoricoPagos> historicoPagosList;
+    @OneToMany(mappedBy = "idFecha")
+    private List<HistoricoPrecio> historicoPrecioList;
 
     public Fecha() {
     }
@@ -89,21 +91,30 @@ public class Fecha implements Serializable {
     }
 
     @XmlTransient
-    public Collection<HistoricoPrecio> getHistoricoPrecioCollection() {
-        return historicoPrecioCollection;
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
     }
 
-    public void setHistoricoPrecioCollection(Collection<HistoricoPrecio> historicoPrecioCollection) {
-        this.historicoPrecioCollection = historicoPrecioCollection;
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
     }
 
     @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public List<HistoricoPagos> getHistoricoPagosList() {
+        return historicoPagosList;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setHistoricoPagosList(List<HistoricoPagos> historicoPagosList) {
+        this.historicoPagosList = historicoPagosList;
+    }
+
+    @XmlTransient
+    public List<HistoricoPrecio> getHistoricoPrecioList() {
+        return historicoPrecioList;
+    }
+
+    public void setHistoricoPrecioList(List<HistoricoPrecio> historicoPrecioList) {
+        this.historicoPrecioList = historicoPrecioList;
     }
 
     @Override

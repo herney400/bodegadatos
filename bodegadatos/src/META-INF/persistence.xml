@@ -15,6 +15,10 @@
     <class>persistencia.Empresa</class>
     <class>persistencia.Region</class>
     <class>persistencia.Medida</class>
+    <class>persistencia.HistoricoPagos</class>
+    <class>persistencia.ReglasHistoricoPrecio</class>
+    <class>persistencia.TipoCliente</class>
+    <class>persistencia.Eventos</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/>
       <property name="javax.persistence.jdbc.password" value="tesis"/>

@@ -7,12 +7,14 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -22,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "clientes")
@@ -32,7 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Clientes.findByIdCliente", query = "SELECT c FROM Clientes c WHERE c.idCliente = :idCliente"),
     @NamedQuery(name = "Clientes.findByCliente", query = "SELECT c FROM Clientes c WHERE c.cliente = :cliente"),
     @NamedQuery(name = "Clientes.findByEstrato", query = "SELECT c FROM Clientes c WHERE c.estrato = :estrato"),
-    @NamedQuery(name = "Clientes.findByBarrio", query = "SELECT c FROM Clientes c WHERE c.barrio = :barrio")})
+    @NamedQuery(name = "Clientes.findByBarrio", query = "SELECT c FROM Clientes c WHERE c.barrio = :barrio"),
+    @NamedQuery(name = "Clientes.findByNivelTension", query = "SELECT c FROM Clientes c WHERE c.nivelTension = :nivelTension")})
 public class Clientes implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,8 +48,15 @@ public class Clientes implements Serializable {
     private Long estrato;
     @Column(name = "barrio")
     private String barrio;
+    @Column(name = "nivel_tension")
+    private Long nivelTension;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCliente")
-    private Collection<HistoricoConsumo> historicoConsumoCollection;
+    private List<HistoricoConsumo> historicoConsumoList;
+    @OneToMany(mappedBy = "idCliente")
+    private List<HistoricoPagos> historicoPagosList;
+    @JoinColumn(name = "id_tipo_cliente", referencedColumnName = "id_tipo_cliente")
+    @ManyToOne
+    private TipoCliente idTipoCliente;
 
     public Clientes() {
     }
@@ -87,13 +97,38 @@ public class Clientes implements Serializable {
         this.barrio = barrio;
     }
 
-    @XmlTransient
-    public Collection<HistoricoConsumo> getHistoricoConsumoCollection() {
-        return historicoConsumoCollection;
+    public Long getNivelTension() {
+        return nivelTension;
     }
 
-    public void setHistoricoConsumoCollection(Collection<HistoricoConsumo> historicoConsumoCollection) {
-        this.historicoConsumoCollection = historicoConsumoCollection;
+    public void setNivelTension(Long nivelTension) {
+        this.nivelTension = nivelTension;
+    }
+
+    @XmlTransient
+    public List<HistoricoConsumo> getHistoricoConsumoList() {
+        return historicoConsumoList;
+    }
+
+    public void setHistoricoConsumoList(List<HistoricoConsumo> historicoConsumoList) {
+        this.historicoConsumoList = historicoConsumoList;
+    }
+
+    @XmlTransient
+    public List<HistoricoPagos> getHistoricoPagosList() {
+        return historicoPagosList;
+    }
+
+    public void setHistoricoPagosList(List<HistoricoPagos> historicoPagosList) {
+        this.historicoPagosList = historicoPagosList;
+    }
+
+    public TipoCliente getIdTipoCliente() {
+        return idTipoCliente;
+    }
+
+    public void setIdTipoCliente(TipoCliente idTipoCliente) {
+        this.idTipoCliente = idTipoCliente;
     }
 
     @Override

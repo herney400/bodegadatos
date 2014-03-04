@@ -4,14 +4,11 @@
  * and open the template in the editor.
  */
 
-package controllers;
+package controladores;
 
-import controllers.exceptions.NonexistentEntityException;
-import controllers.exceptions.PreexistingEntityException;
+import controladores.exceptions.NonexistentEntityException;
+import controladores.exceptions.PreexistingEntityException;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,12 +16,18 @@ import javax.persistence.criteria.Root;
 import persistencia.Tiempo;
 import persistencia.FenomenosClimaticos;
 import persistencia.Fecha;
-import persistencia.Anormalidades;
+import persistencia.Eventos;
+import persistencia.Empresa;
+import persistencia.ReglasHistoricoPrecio;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import persistencia.HistoricoPrecio;
 
 /**
  *
- * @author User
+ * @author Luis Carlos
  */
 public class HistoricoPrecioJpaController implements Serializable {
 
@@ -38,6 +41,9 @@ public class HistoricoPrecioJpaController implements Serializable {
     }
 
     public void create(HistoricoPrecio historicoPrecio) throws PreexistingEntityException, Exception {
+        if (historicoPrecio.getReglasHistoricoPrecioList() == null) {
+            historicoPrecio.setReglasHistoricoPrecioList(new ArrayList<ReglasHistoricoPrecio>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -57,27 +63,51 @@ public class HistoricoPrecioJpaController implements Serializable {
                 idFecha = em.getReference(idFecha.getClass(), idFecha.getIdFecha());
                 historicoPrecio.setIdFecha(idFecha);
             }
-            Anormalidades idAnormalidad = historicoPrecio.getIdAnormalidad();
+            Eventos idAnormalidad = historicoPrecio.getIdAnormalidad();
             if (idAnormalidad != null) {
                 idAnormalidad = em.getReference(idAnormalidad.getClass(), idAnormalidad.getIdAnormalidad());
                 historicoPrecio.setIdAnormalidad(idAnormalidad);
             }
+            Empresa idEmpresa = historicoPrecio.getIdEmpresa();
+            if (idEmpresa != null) {
+                idEmpresa = em.getReference(idEmpresa.getClass(), idEmpresa.getIdEmpresa());
+                historicoPrecio.setIdEmpresa(idEmpresa);
+            }
+            List<ReglasHistoricoPrecio> attachedReglasHistoricoPrecioList = new ArrayList<ReglasHistoricoPrecio>();
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListReglasHistoricoPrecioToAttach : historicoPrecio.getReglasHistoricoPrecioList()) {
+                reglasHistoricoPrecioListReglasHistoricoPrecioToAttach = em.getReference(reglasHistoricoPrecioListReglasHistoricoPrecioToAttach.getClass(), reglasHistoricoPrecioListReglasHistoricoPrecioToAttach.getIdReglasHistoricoPrecio());
+                attachedReglasHistoricoPrecioList.add(reglasHistoricoPrecioListReglasHistoricoPrecioToAttach);
+            }
+            historicoPrecio.setReglasHistoricoPrecioList(attachedReglasHistoricoPrecioList);
             em.persist(historicoPrecio);
             if (idTiempo != null) {
-                idTiempo.getHistoricoPrecioCollection().add(historicoPrecio);
+                idTiempo.getHistoricoPrecioList().add(historicoPrecio);
                 idTiempo = em.merge(idTiempo);
             }
             if (idFenomenoClimatico != null) {
-                idFenomenoClimatico.getHistoricoPrecioCollection().add(historicoPrecio);
+                idFenomenoClimatico.getHistoricoPrecioList().add(historicoPrecio);
                 idFenomenoClimatico = em.merge(idFenomenoClimatico);
             }
             if (idFecha != null) {
-                idFecha.getHistoricoPrecioCollection().add(historicoPrecio);
+                idFecha.getHistoricoPrecioList().add(historicoPrecio);
                 idFecha = em.merge(idFecha);
             }
             if (idAnormalidad != null) {
-                idAnormalidad.getHistoricoPrecioCollection().add(historicoPrecio);
+                idAnormalidad.getHistoricoPrecioList().add(historicoPrecio);
                 idAnormalidad = em.merge(idAnormalidad);
+            }
+            if (idEmpresa != null) {
+                idEmpresa.getHistoricoPrecioList().add(historicoPrecio);
+                idEmpresa = em.merge(idEmpresa);
+            }
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListReglasHistoricoPrecio : historicoPrecio.getReglasHistoricoPrecioList()) {
+                HistoricoPrecio oldIdHistoricoPrecioOfReglasHistoricoPrecioListReglasHistoricoPrecio = reglasHistoricoPrecioListReglasHistoricoPrecio.getIdHistoricoPrecio();
+                reglasHistoricoPrecioListReglasHistoricoPrecio.setIdHistoricoPrecio(historicoPrecio);
+                reglasHistoricoPrecioListReglasHistoricoPrecio = em.merge(reglasHistoricoPrecioListReglasHistoricoPrecio);
+                if (oldIdHistoricoPrecioOfReglasHistoricoPrecioListReglasHistoricoPrecio != null) {
+                    oldIdHistoricoPrecioOfReglasHistoricoPrecioListReglasHistoricoPrecio.getReglasHistoricoPrecioList().remove(reglasHistoricoPrecioListReglasHistoricoPrecio);
+                    oldIdHistoricoPrecioOfReglasHistoricoPrecioListReglasHistoricoPrecio = em.merge(oldIdHistoricoPrecioOfReglasHistoricoPrecioListReglasHistoricoPrecio);
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -104,8 +134,12 @@ public class HistoricoPrecioJpaController implements Serializable {
             FenomenosClimaticos idFenomenoClimaticoNew = historicoPrecio.getIdFenomenoClimatico();
             Fecha idFechaOld = persistentHistoricoPrecio.getIdFecha();
             Fecha idFechaNew = historicoPrecio.getIdFecha();
-            Anormalidades idAnormalidadOld = persistentHistoricoPrecio.getIdAnormalidad();
-            Anormalidades idAnormalidadNew = historicoPrecio.getIdAnormalidad();
+            Eventos idAnormalidadOld = persistentHistoricoPrecio.getIdAnormalidad();
+            Eventos idAnormalidadNew = historicoPrecio.getIdAnormalidad();
+            Empresa idEmpresaOld = persistentHistoricoPrecio.getIdEmpresa();
+            Empresa idEmpresaNew = historicoPrecio.getIdEmpresa();
+            List<ReglasHistoricoPrecio> reglasHistoricoPrecioListOld = persistentHistoricoPrecio.getReglasHistoricoPrecioList();
+            List<ReglasHistoricoPrecio> reglasHistoricoPrecioListNew = historicoPrecio.getReglasHistoricoPrecioList();
             if (idTiempoNew != null) {
                 idTiempoNew = em.getReference(idTiempoNew.getClass(), idTiempoNew.getIdTiempo());
                 historicoPrecio.setIdTiempo(idTiempoNew);
@@ -122,38 +156,74 @@ public class HistoricoPrecioJpaController implements Serializable {
                 idAnormalidadNew = em.getReference(idAnormalidadNew.getClass(), idAnormalidadNew.getIdAnormalidad());
                 historicoPrecio.setIdAnormalidad(idAnormalidadNew);
             }
+            if (idEmpresaNew != null) {
+                idEmpresaNew = em.getReference(idEmpresaNew.getClass(), idEmpresaNew.getIdEmpresa());
+                historicoPrecio.setIdEmpresa(idEmpresaNew);
+            }
+            List<ReglasHistoricoPrecio> attachedReglasHistoricoPrecioListNew = new ArrayList<ReglasHistoricoPrecio>();
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListNewReglasHistoricoPrecioToAttach : reglasHistoricoPrecioListNew) {
+                reglasHistoricoPrecioListNewReglasHistoricoPrecioToAttach = em.getReference(reglasHistoricoPrecioListNewReglasHistoricoPrecioToAttach.getClass(), reglasHistoricoPrecioListNewReglasHistoricoPrecioToAttach.getIdReglasHistoricoPrecio());
+                attachedReglasHistoricoPrecioListNew.add(reglasHistoricoPrecioListNewReglasHistoricoPrecioToAttach);
+            }
+            reglasHistoricoPrecioListNew = attachedReglasHistoricoPrecioListNew;
+            historicoPrecio.setReglasHistoricoPrecioList(reglasHistoricoPrecioListNew);
             historicoPrecio = em.merge(historicoPrecio);
             if (idTiempoOld != null && !idTiempoOld.equals(idTiempoNew)) {
-                idTiempoOld.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idTiempoOld.getHistoricoPrecioList().remove(historicoPrecio);
                 idTiempoOld = em.merge(idTiempoOld);
             }
             if (idTiempoNew != null && !idTiempoNew.equals(idTiempoOld)) {
-                idTiempoNew.getHistoricoPrecioCollection().add(historicoPrecio);
+                idTiempoNew.getHistoricoPrecioList().add(historicoPrecio);
                 idTiempoNew = em.merge(idTiempoNew);
             }
             if (idFenomenoClimaticoOld != null && !idFenomenoClimaticoOld.equals(idFenomenoClimaticoNew)) {
-                idFenomenoClimaticoOld.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idFenomenoClimaticoOld.getHistoricoPrecioList().remove(historicoPrecio);
                 idFenomenoClimaticoOld = em.merge(idFenomenoClimaticoOld);
             }
             if (idFenomenoClimaticoNew != null && !idFenomenoClimaticoNew.equals(idFenomenoClimaticoOld)) {
-                idFenomenoClimaticoNew.getHistoricoPrecioCollection().add(historicoPrecio);
+                idFenomenoClimaticoNew.getHistoricoPrecioList().add(historicoPrecio);
                 idFenomenoClimaticoNew = em.merge(idFenomenoClimaticoNew);
             }
             if (idFechaOld != null && !idFechaOld.equals(idFechaNew)) {
-                idFechaOld.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idFechaOld.getHistoricoPrecioList().remove(historicoPrecio);
                 idFechaOld = em.merge(idFechaOld);
             }
             if (idFechaNew != null && !idFechaNew.equals(idFechaOld)) {
-                idFechaNew.getHistoricoPrecioCollection().add(historicoPrecio);
+                idFechaNew.getHistoricoPrecioList().add(historicoPrecio);
                 idFechaNew = em.merge(idFechaNew);
             }
             if (idAnormalidadOld != null && !idAnormalidadOld.equals(idAnormalidadNew)) {
-                idAnormalidadOld.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idAnormalidadOld.getHistoricoPrecioList().remove(historicoPrecio);
                 idAnormalidadOld = em.merge(idAnormalidadOld);
             }
             if (idAnormalidadNew != null && !idAnormalidadNew.equals(idAnormalidadOld)) {
-                idAnormalidadNew.getHistoricoPrecioCollection().add(historicoPrecio);
+                idAnormalidadNew.getHistoricoPrecioList().add(historicoPrecio);
                 idAnormalidadNew = em.merge(idAnormalidadNew);
+            }
+            if (idEmpresaOld != null && !idEmpresaOld.equals(idEmpresaNew)) {
+                idEmpresaOld.getHistoricoPrecioList().remove(historicoPrecio);
+                idEmpresaOld = em.merge(idEmpresaOld);
+            }
+            if (idEmpresaNew != null && !idEmpresaNew.equals(idEmpresaOld)) {
+                idEmpresaNew.getHistoricoPrecioList().add(historicoPrecio);
+                idEmpresaNew = em.merge(idEmpresaNew);
+            }
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListOldReglasHistoricoPrecio : reglasHistoricoPrecioListOld) {
+                if (!reglasHistoricoPrecioListNew.contains(reglasHistoricoPrecioListOldReglasHistoricoPrecio)) {
+                    reglasHistoricoPrecioListOldReglasHistoricoPrecio.setIdHistoricoPrecio(null);
+                    reglasHistoricoPrecioListOldReglasHistoricoPrecio = em.merge(reglasHistoricoPrecioListOldReglasHistoricoPrecio);
+                }
+            }
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListNewReglasHistoricoPrecio : reglasHistoricoPrecioListNew) {
+                if (!reglasHistoricoPrecioListOld.contains(reglasHistoricoPrecioListNewReglasHistoricoPrecio)) {
+                    HistoricoPrecio oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio = reglasHistoricoPrecioListNewReglasHistoricoPrecio.getIdHistoricoPrecio();
+                    reglasHistoricoPrecioListNewReglasHistoricoPrecio.setIdHistoricoPrecio(historicoPrecio);
+                    reglasHistoricoPrecioListNewReglasHistoricoPrecio = em.merge(reglasHistoricoPrecioListNewReglasHistoricoPrecio);
+                    if (oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio != null && !oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio.equals(historicoPrecio)) {
+                        oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio.getReglasHistoricoPrecioList().remove(reglasHistoricoPrecioListNewReglasHistoricoPrecio);
+                        oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio = em.merge(oldIdHistoricoPrecioOfReglasHistoricoPrecioListNewReglasHistoricoPrecio);
+                    }
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -186,23 +256,33 @@ public class HistoricoPrecioJpaController implements Serializable {
             }
             Tiempo idTiempo = historicoPrecio.getIdTiempo();
             if (idTiempo != null) {
-                idTiempo.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idTiempo.getHistoricoPrecioList().remove(historicoPrecio);
                 idTiempo = em.merge(idTiempo);
             }
             FenomenosClimaticos idFenomenoClimatico = historicoPrecio.getIdFenomenoClimatico();
             if (idFenomenoClimatico != null) {
-                idFenomenoClimatico.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idFenomenoClimatico.getHistoricoPrecioList().remove(historicoPrecio);
                 idFenomenoClimatico = em.merge(idFenomenoClimatico);
             }
             Fecha idFecha = historicoPrecio.getIdFecha();
             if (idFecha != null) {
-                idFecha.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idFecha.getHistoricoPrecioList().remove(historicoPrecio);
                 idFecha = em.merge(idFecha);
             }
-            Anormalidades idAnormalidad = historicoPrecio.getIdAnormalidad();
+            Eventos idAnormalidad = historicoPrecio.getIdAnormalidad();
             if (idAnormalidad != null) {
-                idAnormalidad.getHistoricoPrecioCollection().remove(historicoPrecio);
+                idAnormalidad.getHistoricoPrecioList().remove(historicoPrecio);
                 idAnormalidad = em.merge(idAnormalidad);
+            }
+            Empresa idEmpresa = historicoPrecio.getIdEmpresa();
+            if (idEmpresa != null) {
+                idEmpresa.getHistoricoPrecioList().remove(historicoPrecio);
+                idEmpresa = em.merge(idEmpresa);
+            }
+            List<ReglasHistoricoPrecio> reglasHistoricoPrecioList = historicoPrecio.getReglasHistoricoPrecioList();
+            for (ReglasHistoricoPrecio reglasHistoricoPrecioListReglasHistoricoPrecio : reglasHistoricoPrecioList) {
+                reglasHistoricoPrecioListReglasHistoricoPrecio.setIdHistoricoPrecio(null);
+                reglasHistoricoPrecioListReglasHistoricoPrecio = em.merge(reglasHistoricoPrecioListReglasHistoricoPrecio);
             }
             em.remove(historicoPrecio);
             em.getTransaction().commit();

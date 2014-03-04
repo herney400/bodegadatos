@@ -7,7 +7,7 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "fenomenos_climaticos")
@@ -44,7 +44,7 @@ public class FenomenosClimaticos implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
     @OneToMany(mappedBy = "idFenomenoClimatico")
-    private Collection<HistoricoPrecio> historicoPrecioCollection;
+    private List<HistoricoPrecio> historicoPrecioList;
     @JoinColumn(name = "id_ciudad", referencedColumnName = "id_ciudad")
     @ManyToOne
     private Ciudad idCiudad;
@@ -81,12 +81,12 @@ public class FenomenosClimaticos implements Serializable {
     }
 
     @XmlTransient
-    public Collection<HistoricoPrecio> getHistoricoPrecioCollection() {
-        return historicoPrecioCollection;
+    public List<HistoricoPrecio> getHistoricoPrecioList() {
+        return historicoPrecioList;
     }
 
-    public void setHistoricoPrecioCollection(Collection<HistoricoPrecio> historicoPrecioCollection) {
-        this.historicoPrecioCollection = historicoPrecioCollection;
+    public void setHistoricoPrecioList(List<HistoricoPrecio> historicoPrecioList) {
+        this.historicoPrecioList = historicoPrecioList;
     }
 
     public Ciudad getIdCiudad() {

@@ -7,7 +7,6 @@
 package persistencia;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,14 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
 @Table(name = "historico_consumo")
@@ -39,9 +36,7 @@ public class HistoricoConsumo implements Serializable {
     @Column(name = "id_historico_consumo")
     private Long idHistoricoConsumo;
     @Column(name = "total_consumo")
-    private Character totalConsumo;
-    @OneToMany(mappedBy = "idHistoricoConsumo")
-    private Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollection;
+    private String totalConsumo;
     @JoinColumn(name = "id_tiempo", referencedColumnName = "id_tiempo")
     @ManyToOne
     private Tiempo idTiempo;
@@ -76,21 +71,12 @@ public class HistoricoConsumo implements Serializable {
         this.idHistoricoConsumo = idHistoricoConsumo;
     }
 
-    public Character getTotalConsumo() {
+    public String getTotalConsumo() {
         return totalConsumo;
     }
 
-    public void setTotalConsumo(Character totalConsumo) {
+    public void setTotalConsumo(String totalConsumo) {
         this.totalConsumo = totalConsumo;
-    }
-
-    @XmlTransient
-    public Collection<ReglasHistoricoConsumo> getReglasHistoricoConsumoCollection() {
-        return reglasHistoricoConsumoCollection;
-    }
-
-    public void setReglasHistoricoConsumoCollection(Collection<ReglasHistoricoConsumo> reglasHistoricoConsumoCollection) {
-        this.reglasHistoricoConsumoCollection = reglasHistoricoConsumoCollection;
     }
 
     public Tiempo getIdTiempo() {

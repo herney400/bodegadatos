@@ -20,15 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author N550J
+ * @author Luis Carlos
  */
 @Entity
-@Table(name = "reglas_historico_consumo")
+@Table(name = "reglas_historico_precio")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ReglasHistoricoConsumo.findAll", query = "SELECT r FROM ReglasHistoricoConsumo r"),
-    @NamedQuery(name = "ReglasHistoricoConsumo.findByIdReglasHistoricoPrecio", query = "SELECT r FROM ReglasHistoricoConsumo r WHERE r.idReglasHistoricoPrecio = :idReglasHistoricoPrecio")})
-public class ReglasHistoricoConsumo implements Serializable {
+    @NamedQuery(name = "ReglasHistoricoPrecio.findAll", query = "SELECT r FROM ReglasHistoricoPrecio r"),
+    @NamedQuery(name = "ReglasHistoricoPrecio.findByIdReglasHistoricoPrecio", query = "SELECT r FROM ReglasHistoricoPrecio r WHERE r.idReglasHistoricoPrecio = :idReglasHistoricoPrecio")})
+public class ReglasHistoricoPrecio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -37,14 +37,14 @@ public class ReglasHistoricoConsumo implements Serializable {
     @JoinColumn(name = "id_regla", referencedColumnName = "id_regla")
     @ManyToOne
     private Reglas idRegla;
-    @JoinColumn(name = "id_historico_consumo", referencedColumnName = "id_historico_consumo")
+    @JoinColumn(name = "id_historico_precio", referencedColumnName = "id_historico_precio")
     @ManyToOne
-    private HistoricoConsumo idHistoricoConsumo;
+    private HistoricoPrecio idHistoricoPrecio;
 
-    public ReglasHistoricoConsumo() {
+    public ReglasHistoricoPrecio() {
     }
 
-    public ReglasHistoricoConsumo(Long idReglasHistoricoPrecio) {
+    public ReglasHistoricoPrecio(Long idReglasHistoricoPrecio) {
         this.idReglasHistoricoPrecio = idReglasHistoricoPrecio;
     }
 
@@ -64,12 +64,12 @@ public class ReglasHistoricoConsumo implements Serializable {
         this.idRegla = idRegla;
     }
 
-    public HistoricoConsumo getIdHistoricoConsumo() {
-        return idHistoricoConsumo;
+    public HistoricoPrecio getIdHistoricoPrecio() {
+        return idHistoricoPrecio;
     }
 
-    public void setIdHistoricoConsumo(HistoricoConsumo idHistoricoConsumo) {
-        this.idHistoricoConsumo = idHistoricoConsumo;
+    public void setIdHistoricoPrecio(HistoricoPrecio idHistoricoPrecio) {
+        this.idHistoricoPrecio = idHistoricoPrecio;
     }
 
     @Override
@@ -82,10 +82,10 @@ public class ReglasHistoricoConsumo implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ReglasHistoricoConsumo)) {
+        if (!(object instanceof ReglasHistoricoPrecio)) {
             return false;
         }
-        ReglasHistoricoConsumo other = (ReglasHistoricoConsumo) object;
+        ReglasHistoricoPrecio other = (ReglasHistoricoPrecio) object;
         if ((this.idReglasHistoricoPrecio == null && other.idReglasHistoricoPrecio != null) || (this.idReglasHistoricoPrecio != null && !this.idReglasHistoricoPrecio.equals(other.idReglasHistoricoPrecio))) {
             return false;
         }
@@ -94,7 +94,7 @@ public class ReglasHistoricoConsumo implements Serializable {
 
     @Override
     public String toString() {
-        return "persistencia.ReglasHistoricoConsumo[ idReglasHistoricoPrecio=" + idReglasHistoricoPrecio + " ]";
+        return "persistencia.ReglasHistoricoPrecio[ idReglasHistoricoPrecio=" + idReglasHistoricoPrecio + " ]";
     }
     
 }

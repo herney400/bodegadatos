@@ -28,7 +28,7 @@ public class Bodegadatos {
 	    JFrame.setDefaultLookAndFeelDecorated(true);
 	    JDialog.setDefaultLookAndFeelDecorated(true);
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            CargaDatos cd = new CargaDatos();
+            Reportes cd = new Reportes();
             cd.show();
 	}
 	catch (Exception e)
